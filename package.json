@@ -1,6 +1,6 @@
 {
   "name": "markdown-to-pdf",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Atom package that convert markdown to pdf, png or jpeg on the fly",
   "main": "./lib/markdown-to-pdf",
   "activationCommands": {
