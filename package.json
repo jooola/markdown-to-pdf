@@ -2,10 +2,13 @@
   "name": "markdown-to-pdf",
   "version": "1.0.0",
   "description": "Atom package that convert markdown to pdf, png or jpeg on the fly",
-  "main": "",
+  "main": "./lib/markdown-to-pdf",
+  "activationCommands": {
+    "atom-workspace": "markdown-to-pdf:convert"
+  },
   "scripts": {
-    "format": "prettier --write \"**/*.{js,json,md}\"",
-    "lint": "prettier --check \"**/*.{js,json,md}\"",
+    "format": "prettier --write \"**/*.{js,json,md,css}\"",
+    "lint": "prettier --check \"**/*.{js,json,md,css}\"",
     "release": "npm version -m \":rocket: Release %s\""
   },
   "repository": {
@@ -24,10 +27,21 @@
     "url": "https://github.com/jooola/markdown-to-pdf/issues"
   },
   "homepage": "https://github.com/jooola/markdown-to-pdf#readme",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "html-pdf": "2.0.x",
+    "less": "^2.7.3",
+    "loophole": "^1.1.0",
+    "mdpdf": "^1.6.0",
+    "tmp": "0.0.33"
+  },
   "devDependencies": {
     "eslint": "^6.8.0",
     "husky": "^4.2.3",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "temp": "^0.8.3"
   },
   "husky": {
     "hooks": {
