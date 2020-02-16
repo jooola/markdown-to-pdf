@@ -1,14 +1,11 @@
 {
   "name": "markdown-to-pdf",
   "version": "0.0.0",
-  "description": "Atom package that convert markdown to pdf, png or jpeg on the fly",
+  "description": "Atom package that convert markdown to pdf on the fly",
   "main": "./lib/markdown-to-pdf",
-  "activationCommands": {
-    "atom-workspace": "markdown-to-pdf:convert"
-  },
   "scripts": {
     "format": "prettier --write \"**/*.{js,json,md,css}\"",
-    "lint": "prettier --check \"**/*.{js,json,md,css}\"",
+    "lint": "eslint ./lib && prettier --check \"**/*.{js,json,md,css}\"",
     "release": "npm version -m \":rocket: Release %s\""
   },
   "repository": {
@@ -28,24 +25,26 @@
   },
   "homepage": "https://github.com/jooola/markdown-to-pdf#readme",
   "engines": {
-    "atom": ">0.50.0"
+    "atom": ">=1.0.0"
   },
   "dependencies": {
-    "html-pdf": "2.0.x",
-    "less": "^2.7.3",
-    "loophole": "^1.1.0",
-    "mdpdf": "^1.6.0",
-    "tmp": "0.0.33"
+    "mdpdf": "^2.1.0"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "husky": "^4.2.3",
+    "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
-    "temp": "^0.8.3"
+    "rimraf": "^3.0.2",
+    "tmp": "^0.1.0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "**/*.{js,json,md,css}": "npm run format"
   }
 }

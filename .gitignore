@@ -1,6 +1,9 @@
 ## Custom .gitignore
 ################################################################################
 
+*.pdf
+*.html
+
 ## Github Node .gitignore
 ## See https://github.com/github/gitignore/blob/master/Node.gitignore
 ################################################################################
