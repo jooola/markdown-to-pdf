@@ -1,4 +1,12 @@
 {
+  "context-menu": {
+    "atom-text-editor": [
+      {
+        "label": "Convert to PDF",
+        "command": "markdown-to-pdf:convert"
+      }
+    ]
+  },
   "menu": [
     {
       "label": "Packages",
@@ -9,6 +17,10 @@
             {
               "label": "Convert",
               "command": "markdown-to-pdf:convert"
+            },
+            {
+              "label": "Settings",
+              "command": "markdown-to-pdf:open-settings"
             }
           ]
         }
