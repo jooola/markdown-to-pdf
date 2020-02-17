@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --write \"**/*.{js,json,md,css}\"",
     "lint": "eslint ./lib && prettier --check \"**/*.{js,json,md,css}\"",
-    "release": "npm version -m \":rocket: Release %s\""
+    "release": "apm publish"
   },
   "repository": {
     "type": "git",
