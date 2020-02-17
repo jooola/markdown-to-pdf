@@ -1,7 +1,7 @@
 {
   "name": "markdown-to-pdf",
   "version": "0.1.0",
-  "description": "Atom package that convert markdown to pdf on the fly",
+  "description": "Atom package that convert markdown files to pdf",
   "main": "./lib/markdown-to-pdf",
   "scripts": {
     "format": "prettier --write \"**/*.{js,json,md,css}\"",
