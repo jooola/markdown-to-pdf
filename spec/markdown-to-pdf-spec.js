@@ -66,8 +66,8 @@ describe('MarkdownToPdf', () => {
   });
 
   describe('when the markdown-to-pdf:convert event is triggered on a unsaved file', () => {
-    let cwd;
     let unknownOutputFilePath;
+
     beforeEach(() => {
       waitsForPromise(() => atom.packages.activatePackage('tree-view'));
       waitsForPromise(() => atom.workspace.open().then(el => (editor = el)));
@@ -81,7 +81,7 @@ describe('MarkdownToPdf', () => {
       atom.commands.dispatch(workspaceElement, 'markdown-to-pdf:convert');
 
       waitsFor('the pdf file to be created', () => {
-        cwd = getPwd();
+        let cwd = getPwd();
         let files = fs.readdirSync(cwd);
         for (var i = 0; i < files.length; i++) {
           if (files[i].split('.').pop() === 'pdf') {
@@ -97,7 +97,6 @@ describe('MarkdownToPdf', () => {
     });
 
     afterEach(() => {
-      rimraf.sync(path.join(cwd, '_temp.html'));
       rimraf.sync(unknownOutputFilePath);
     });
   });
