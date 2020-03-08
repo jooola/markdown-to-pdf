@@ -27,10 +27,12 @@
   "engines": {
     "atom": ">=1.0.0"
   },
+  "atomTestRunner": "atom-jasmine3-test-runner",
   "dependencies": {
     "mdpdf": "^2.1.0"
   },
   "devDependencies": {
+    "atom-jasmine3-test-runner": "^4.4.3",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "husky": "^4.2.3",
