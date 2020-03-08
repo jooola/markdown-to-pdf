@@ -1,103 +1,125 @@
-'use babel';
-
-import MarkdownToPdf from '../lib/markdown-to-pdf';
-import fs from 'fs';
-import path from 'path';
-import rimraf from 'rimraf';
-import tmp from 'tmp';
-import { getPwd } from '../lib/utils';
-
 // Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
 //
 // To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
 // or `fdescribe`). Remove the `f` to unfocus the block.
 
-function checkIsPDF(filePath) {
-  return (
-    fs
-      .readFileSync(filePath)
-      .slice(0, 4)
-      .toString('hex') === '25504446'
-  );
-}
+const MarkdownToPdf = require('../lib/markdown-to-pdf');
+const fs = require('fs');
+const path = require('path');
+const rimraf = require('rimraf');
+const tmp = require('tmp');
+const { getPwd } = require('../lib/utils');
+const { createFixturePaths, isOnDisk, isPDF, hasLines, condition } = require('./helpers');
 
-describe('MarkdownToPdf', () => {
-  let workspaceElement, activationPromise;
+describe('markdown-to-pdf:convert', () => {
   let tmpDir;
-  let inputFilePath, ouputFilePath, fixtureFilePath;
+
+  let workspace;
   let editor;
 
-  beforeEach(() => {
-    workspaceElement = atom.views.getView(atom.workspace);
-    activationPromise = atom.packages.activatePackage('markdown-to-pdf');
-
+  beforeEach(async () => {
     tmpDir = tmp.dirSync();
-    fixtureFilePath = path.join(__dirname, 'fixtures/simple.md');
-    inputFilePath = path.join(tmpDir.name, 'simple.md');
-    ouputFilePath = path.join(tmpDir.name, 'simple.pdf');
+
+    workspace = await atom.views.getView(atom.workspace);
+    await atom.packages.activatePackage('markdown-to-pdf');
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     tmpDir.removeCallback();
   });
 
-  describe('when the markdown-to-pdf:convert event is triggered on a saved file', () => {
-    beforeEach(() => {
-      fs.copyFileSync(fixtureFilePath, inputFilePath);
+  it('should convert an existing markdown file to pdf', async () => {
+    const [fixtureFilePath, inputFilePath, ouputFilePath] = createFixturePaths(tmpDir, 'simple');
 
-      waitsForPromise(() => atom.workspace.open(inputFilePath).then(el => (editor = el)));
-      waitsForPromise(() => activationPromise);
+    fs.copyFileSync(fixtureFilePath, inputFilePath);
+    editor = await atom.workspace.open(inputFilePath);
+
+    expect(editor).not.toBe(undefined);
+    expect(editor.getPath()).toContain('simple.md');
+
+    atom.commands.dispatch(workspace, 'markdown-to-pdf:convert');
+
+    await condition('pdf file to be created', () => {
+      return fs.readdirSync(tmpDir.name).indexOf('simple.pdf') !== -1;
     });
 
-    it('should convert the file to pdf', () => {
-      expect(editor.getPath()).toContain('simple.md');
-
-      atom.commands.dispatch(workspaceElement, 'markdown-to-pdf:convert');
-
-      waitsFor('the pdf file to be created', () => {
-        return fs.readdirSync(tmpDir.name).indexOf('simple.pdf') !== -1;
-      });
-
-      runs(() => {
-        expect(ouputFilePath).toExistOnDisk();
-        expect(checkIsPDF(ouputFilePath)).toBe(true);
-      });
-    });
+    expect(isOnDisk(ouputFilePath)).toBe(true);
+    expect(isPDF(ouputFilePath)).toBe(true);
+    expect(
+      hasLines(ouputFilePath, [
+        '%PDF-1.4',
+        '/URI (http://daringfireball.net/projects/markdown/)>>>>',
+        '/URI (http://www.fileformat.info/info/unicode/char/2163/index.htm)>>>>',
+        '/URI (http://www.markitdown.net/)>>>>',
+      ]),
+    ).toBe(true);
   });
 
-  describe('when the markdown-to-pdf:convert event is triggered on a unsaved file', () => {
-    let unknownOutputFilePath;
+  it('should convert an existing markdown with picture file to pdf', async () => {
+    const [fixtureFilePath, inputFilePath, ouputFilePath] = createFixturePaths(tmpDir, 'image');
 
-    beforeEach(() => {
-      waitsForPromise(() => atom.packages.activatePackage('tree-view'));
-      waitsForPromise(() => atom.workspace.open().then(el => (editor = el)));
-      editor.setText(fs.readFileSync(fixtureFilePath).toString());
-      waitsForPromise(() => activationPromise);
+    fs.copyFileSync(fixtureFilePath, inputFilePath);
+    editor = await atom.workspace.open(inputFilePath);
+
+    expect(editor).not.toBe(undefined);
+    expect(editor.getPath()).toContain('image.md');
+
+    atom.commands.dispatch(workspace, 'markdown-to-pdf:convert');
+
+    await condition('pdf file to be created', () => {
+      return fs.readdirSync(tmpDir.name).indexOf('image.pdf') !== -1;
     });
 
-    it('should convert the content to pdf', () => {
-      expect(editor.getPath()).toBeUndefined();
+    expect(isOnDisk(ouputFilePath)).toBe(true);
+    expect(isPDF(ouputFilePath)).toBe(true);
+    expect(
+      hasLines(ouputFilePath, [
+        '%PDF-1.4',
+        // TODO: Fix picture not properly embed in PDF files
+        //       See https://github.com/BlueHatbRit/mdpdf/issues/79
 
-      atom.commands.dispatch(workspaceElement, 'markdown-to-pdf:convert');
+        // '<</Type /XObject',
+        // '/Subtype /Image',
+        // '/Width 640',
+        // '/Height 480',
+        // '/ColorSpace /DeviceRGB',
+        // '/BitsPerComponent 8',
+        // '/Filter /FlateDecode',
+      ]),
+    ).toBe(true);
+  });
 
-      waitsFor('the pdf file to be created', () => {
-        let cwd = getPwd();
-        let files = fs.readdirSync(cwd);
-        for (var i = 0; i < files.length; i++) {
-          if (files[i].split('.').pop() === 'pdf') {
-            return (unknownOutputFilePath = path.join(cwd, files[i]));
-          }
+  it('should convert an unsaved markdown file to pdf', async () => {
+    const [fixtureFilePath] = createFixturePaths(tmpDir, 'simple');
+
+    await atom.packages.activatePackage('tree-view');
+    editor = await atom.workspace.open();
+    editor.setText(fs.readFileSync(fixtureFilePath).toString());
+
+    expect(editor.getPath()).toBeUndefined();
+
+    atom.commands.dispatch(workspace, 'markdown-to-pdf:convert');
+
+    const unknownOutputFilePath = await condition('pdf file to be created', () => {
+      let cwd = getPwd();
+      let files = fs.readdirSync(cwd);
+      for (var i = 0; i < files.length; i++) {
+        if (files[i].split('.').pop() === 'pdf') {
+          return path.join(cwd, files[i]);
         }
-      });
-
-      runs(() => {
-        expect(unknownOutputFilePath).toExistOnDisk();
-        expect(checkIsPDF(unknownOutputFilePath)).toBe(true);
-      });
+      }
+      return false;
     });
 
-    afterEach(() => {
-      rimraf.sync(unknownOutputFilePath);
-    });
+    expect(isOnDisk(unknownOutputFilePath)).toBe(true);
+    expect(isPDF(unknownOutputFilePath)).toBe(true);
+    expect(
+      hasLines(unknownOutputFilePath, [
+        '%PDF-1.4',
+        '/URI (http://daringfireball.net/projects/markdown/)>>>>',
+        '/URI (http://www.fileformat.info/info/unicode/char/2163/index.htm)>>>>',
+        '/URI (http://www.markitdown.net/)>>>>',
+      ]),
+    ).toBe(true);
   });
 });
