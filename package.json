@@ -29,7 +29,7 @@
   },
   "atomTestRunner": "atom-jasmine3-test-runner",
   "dependencies": {
-    "mdpdf": "^2.1.0"
+    "mdpdf": "^2.1.1"
   },
   "devDependencies": {
     "atom-jasmine3-test-runner": "^4.4.3",
