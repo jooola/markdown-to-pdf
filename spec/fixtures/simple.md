@@ -37,7 +37,7 @@ _Note: the fourth item uses the Unicode character for [Roman numeral four][2]._
 You can also make `inline code` to add code into other things.
 
 ```js
-var foo = function(bar) {
+var foo = function (bar) {
   return bar++;
 };
 
