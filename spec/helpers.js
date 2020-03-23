@@ -16,19 +16,11 @@ export function isOnDisk(filePath) {
 }
 
 export function isPDF(filePath) {
-  return (
-    fs
-      .readFileSync(filePath)
-      .slice(0, 4)
-      .toString('hex') === '25504446'
-  );
+  return fs.readFileSync(filePath).slice(0, 4).toString('hex') === '25504446';
 }
 
 export function hasLines(filePath, expectLines) {
-  const foundLines = fs
-    .readFileSync(filePath)
-    .toString()
-    .split('\n');
+  const foundLines = fs.readFileSync(filePath).toString().split('\n');
 
   for (var expect of expectLines) {
     if (foundLines.indexOf(expect) === -1) {
@@ -59,7 +51,7 @@ export async function condition(why, condition) {
 }
 
 export function timeoutPromise(timeout) {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     setTimeout(resolve, timeout);
   });
 }
