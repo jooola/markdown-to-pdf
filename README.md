@@ -2,7 +2,7 @@
 
 Atom package that convert markdown to pdf on the fly.
 
-This package is baseb on the previous [Markdown to PDF package](https://github.com/travs/markdown-to-pdf) maintained by [travs](https://github.com/travs).
+This package is baseb on the previous [Markdown to PDF package](https://github.com/travs/markdown-pdf) maintained by [travs](https://github.com/travs).
 
 ## Usage
 
