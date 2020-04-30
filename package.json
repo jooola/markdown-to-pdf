@@ -39,7 +39,7 @@
     "lint-staged": "^10.1.6",
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
-    "tmp": "^0.1.0"
+    "tmp": "^0.2.1"
   },
   "husky": {
     "hooks": {
