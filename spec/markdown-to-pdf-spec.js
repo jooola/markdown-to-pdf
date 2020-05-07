@@ -18,7 +18,7 @@ describe('markdown-to-pdf:convert', () => {
   let editor;
 
   beforeEach(async () => {
-    tmpDir = tmp.dirSync();
+    tmpDir = tmp.dirSync({ unsafeCleanup: true });
 
     workspace = await atom.views.getView(atom.workspace);
     await atom.packages.activatePackage('markdown-to-pdf');
