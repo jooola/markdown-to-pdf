@@ -34,7 +34,7 @@
   "devDependencies": {
     "atom-jasmine3-test-runner": "^4.4.8",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.3.1",
+    "eslint": "^7.5.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
