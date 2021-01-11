@@ -1,5 +1,7 @@
 # [Markdown to PDF](https://atom.io/packages/markdown-to-pdf)
 
+> This package isn't maintained anymore, please considere using the [original package](https://github.com/travs/markdown-pdf). I'm not using Atom anymore. Feel free to ask if you're interrested in the package namespace.
+
 Atom package that convert markdown to pdf on the fly.
 
 This package is baseb on the previous [Markdown to PDF package](https://github.com/travs/markdown-pdf) maintained by [travs](https://github.com/travs).
